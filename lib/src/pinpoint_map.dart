@@ -8,6 +8,8 @@ class PinPointMap extends StatefulWidget {
   _PinPointMapState createState() => _PinPointMapState();
 }
 
+/// This widget will create the map layout and define the map attributes
+
 class _PinPointMapState extends State<PinPointMap> {
   @override
   Widget build(BuildContext context) {
