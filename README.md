@@ -1,16 +1,17 @@
-# pinpoint
+# PinPoint
+PinPoint will let you store map-locations (together with notes and pictures) of places that you visit.
 
-A new Flutter project.
+## About
+Offline mode will be made available first where all "pinpoints" are stored locally. They can still be shareable to others by sharing the Google maps location of said place.
 
-## Getting Started
+With online mode you should be able to see pinpoints by other users if made public.
 
-This project is a starting point for a Flutter application.
+## Stack
+Using Flutter and eventually Firebase.
 
-A few resources to get you started if this is your first Flutter project:
+## Why?
+Travis got tired of screenshotting locations on google maps app and thought that it would be better to store them in one place. This app could also serve as a great learning opportunity of app development in general.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Authors
+Travis Persson  
+Markus Lucero
