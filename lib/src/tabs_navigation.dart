@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pinpoint_map.dart';
+import 'pinpoint_card.dart';
 
 class TabBarNav extends StatelessWidget {
   @override
@@ -20,10 +21,8 @@ class TabBarNav extends StatelessWidget {
             ],
           ),
         ),
-        body: TabBarView(children: [
-          Center(
-            child: Text("Here goes a list of my pinpoints"),
-          ),
+        body: TabBarView(physics: NeverScrollableScrollPhysics(), children: [
+          PinPointCard(),
           PinPointMap(),
         ]),
       ),
