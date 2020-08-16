@@ -22,7 +22,7 @@ class TabBarNav extends StatelessWidget {
           ),
         ),
         body: TabBarView(physics: NeverScrollableScrollPhysics(), children: [
-          PinPointCard(),
+          PinPointCards(),
           PinPointMap(),
         ]),
       ),
