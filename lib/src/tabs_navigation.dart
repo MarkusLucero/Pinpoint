@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pinpoint_map.dart';
-import 'pinpoint_card.dart';
+import 'pinpoint_cards.dart';
 
 class TabBarNav extends StatelessWidget {
   @override
