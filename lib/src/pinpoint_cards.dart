@@ -14,7 +14,7 @@ class PinPointCards extends StatefulWidget {
 
 class _PinPointCardsState extends State<PinPointCards> {
   // contains all the user set pinpoints TODO: real data from pins set on the map over mockup
-  List<PinPoint> pinPoints = [
+  final List<PinPoint> pinPoints = [
     PinPoint(
       title: "The best location",
       notes:
@@ -67,33 +67,86 @@ class _PinPointCardsState extends State<PinPointCards> {
     return ListView.builder(
       itemCount: this.pinPoints.length,
       itemBuilder: (context, index) {
-        return Card(
-          key: UniqueKey(), // TODO objectKey instead??
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ClipRRect(
-                child: Image.network("${this.pinPoints[index].imgUrl}",
+        return InkWell(
+          onTap: () => {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CardDetailScreen(pinPoint: this.pinPoints[index])))
+          },
+          child: Card(
+            key: UniqueKey(), // TODO objectKey instead??
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ClipRRect(
+                  child: Image.network(
+                    "${this.pinPoints[index].imgUrl}",
                     // width: 300,
                     height: 150,
-                    fit: BoxFit.cover),
-              ),
-              // TODO: Adding trailing icon to be tap-able for submenu
-              ListTile(
-                title: Text(
-                  "${this.pinPoints[index].title}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                subtitle:
-                    Text("${this.pinPoints[index].location}".toUpperCase()),
-                dense: true,
-              ),
-            ],
+                // TODO: Adding trailing icon to be tap-able for submenu
+                ListTile(
+                  title: Text(
+                    "${this.pinPoints[index].title}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle:
+                      Text("${this.pinPoints[index].location}".toUpperCase()),
+                  dense: true,
+                ),
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+class CardDetailScreen extends StatelessWidget {
+  final PinPoint pinPoint;
+
+  //kolla upp detta med nycklar
+  CardDetailScreen({Key key, @required this.pinPoint}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Pin Point"),
+      ),
+      body: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ClipRRect(
+                  child: Image.network(
+                    "${pinPoint.imgUrl}",
+                    fit: BoxFit.cover,
+                    height: 250,
+                  ),
+                ),
+                ListTile(
+                  title: Text(
+                    "${pinPoint.title}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text("${pinPoint.location}".toUpperCase()),
+                  dense: true,
+                ),
+                Text("${pinPoint.notes}"),
+              ],
+            ),
+          )),
     );
   }
 }
