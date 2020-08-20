@@ -129,10 +129,11 @@ class CardDetailScreen extends StatelessWidget {
                 ClipRRect(
                   child: Image.network(
                     "${pinPoint.imgUrl}",
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                     height: 250,
                   ),
                 ),
+                // TODO: This shouldnt be a ListTile..
                 ListTile(
                   title: Text(
                     "${pinPoint.title}",
@@ -141,7 +142,10 @@ class CardDetailScreen extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text("${pinPoint.location}".toUpperCase()),
-                  dense: true,
+                  trailing: IconButton(
+                    onPressed: () {},
+                    icon: Icon(Icons.edit),
+                  ),
                 ),
                 Text("${pinPoint.notes}"),
               ],
