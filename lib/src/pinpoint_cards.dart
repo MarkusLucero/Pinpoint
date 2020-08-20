@@ -70,10 +70,53 @@ class _PinPointCardsState extends State<PinPointCards> {
         return InkWell(
           onTap: () => {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        CardDetailScreen(pinPoint: this.pinPoints[index])))
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    CardDetailScreen(pinPoint: this.pinPoints[index]),
+              ),
+            ),
+          },
+          onLongPress: () => {
+            showModalBottomSheet(
+              context: context,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(5.0),
+                topRight: Radius.circular(5.0),
+              )),
+              builder: (context) => SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      onTap: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CardDetailScreen(
+                                pinPoint: this.pinPoints[index]),
+                          ),
+                        ).then((value) => Navigator.pop(
+                            context)); // This removes the modal when we go back from screen
+                      },
+                      leading: Icon(Icons.launch),
+                      title: Text("Open"),
+                    ),
+                    ListTile(
+                      onTap: null,
+                      leading: Icon(Icons.edit),
+                      title: Text("Edit"),
+                    ),
+                    ListTile(
+                      onTap: null,
+                      leading: Icon(Icons.delete),
+                      title: Text("Delete"),
+                    )
+                  ],
+                ),
+              ),
+            ),
           },
           child: Card(
             key: UniqueKey(), // TODO objectKey instead??
