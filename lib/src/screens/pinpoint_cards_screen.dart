@@ -25,9 +25,18 @@ class PinPointCardsScreen extends StatelessWidget {
   }
 
   /* 
+    Will remove the pinPoint from list after pressing the delete button on the bottomSheet modal of said pinPoint card
+   */
+  void _removePinPointFromList(int index, BuildContext context) {
+    Provider.of<PinPointsService>(context, listen: false).remove(index);
+    Navigator.pop(context); //hide modal after removing pinpoint
+  }
+
+  /* 
     This function build the bottomSheet modal that shows up when long pressing a card
    */
-  void _cardsScreenModalBottomSheet(PinPoint pinPoint, BuildContext context) {
+  void _cardsScreenModalBottomSheet(
+      PinPoint pinPoint, int index, BuildContext context) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -51,7 +60,7 @@ class PinPointCardsScreen extends StatelessWidget {
               title: Text("Edit"),
             ),
             ListTile(
-              onTap: null, //TODO: delete card
+              onTap: () => _removePinPointFromList(index, context),
               leading: Icon(Icons.delete),
               title: Text("Delete"),
             )
@@ -103,7 +112,7 @@ class PinPointCardsScreen extends StatelessWidget {
         return InkWell(
           onTap: () => _goFromCardsScreenToDetailed(pinPoints[index], context),
           onLongPress: () =>
-              _cardsScreenModalBottomSheet(pinPoints[index], context),
+              _cardsScreenModalBottomSheet(pinPoints[index], index, context),
           child: Card(
             key:
                 UniqueKey(), // TODO: objectKey instead since each object couldn't possibly be the same??
