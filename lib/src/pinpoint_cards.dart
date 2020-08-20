@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pinpoint/src/models/pin_point_model.dart';
+import 'screens/card_detail_screen.dart';
 
 /*
  * Widget that lists all pinpoints as cards
  * The state used is the list which will change if the user adds/removes pinpoints 
- * TODO State probably shouldnt be in this widget - will fix when we get to the state management part
+ * TODO State shouldn't be in this widget - will fix when we get to the state management part
 */
 
 class PinPointCards extends StatefulWidget {
@@ -14,7 +15,7 @@ class PinPointCards extends StatefulWidget {
 
 class _PinPointCardsState extends State<PinPointCards> {
   // contains all the user set pinpoints TODO: real data from pins set on the map over mockup
-  List<PinPoint> pinPoints = [
+  final List<PinPoint> pinPoints = [
     PinPoint(
       title: "The best location",
       notes:
@@ -62,35 +63,109 @@ class _PinPointCardsState extends State<PinPointCards> {
     ),
   ];
 
+  /* 
+    This function is used to navigate to the detailed screen of a pinPoint after pressing
+    "open" in the bottomSheet modal in CardsScreen
+  */
+  void _goFromModalToCardDetailScreen(PinPoint pinPoint) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CardDetailScreen(pinPoint: pinPoint),
+      ),
+    ).then((value) => Navigator.pop(context));
+  }
+
+  /* 
+    This function build the bottomSheet modal that shows up when long pressing a card
+   */
+  void _cardsScreenModalBottomSheet(PinPoint pinPoint) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0),
+        ),
+      ),
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              onTap: () => _goFromModalToCardDetailScreen(pinPoint),
+              leading: Icon(Icons.launch),
+              title: Text("Open"),
+            ),
+            ListTile(
+              onTap: null, //TODO: go to edit view
+              leading: Icon(Icons.edit),
+              title: Text("Edit"),
+            ),
+            ListTile(
+              onTap: null, //TODO: delete card
+              leading: Icon(Icons.delete),
+              title: Text("Delete"),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  /* 
+    This function is used to navigate to the detailed screen of a pinPoint after tapping
+    on a card
+  */
+  void _goFromCardsScreenToDetailed(PinPoint pinPoint) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CardDetailScreen(pinPoint: pinPoint),
+      ),
+    );
+  }
+
+  Widget _cardListTileWidget(String imgUrl, String title, String location) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundColor: Colors.amber[100],
+        backgroundImage: NetworkImage(
+          imgUrl,
+        ),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      subtitle: Text(location.toUpperCase()),
+      dense: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: this.pinPoints.length,
       itemBuilder: (context, index) {
-        return Card(
-          key: UniqueKey(), // TODO objectKey instead??
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ClipRRect(
-                child: Image.network("${this.pinPoints[index].imgUrl}",
-                    // width: 300,
-                    height: 150,
-                    fit: BoxFit.cover),
-              ),
-              // TODO: Adding trailing icon to be tap-able for submenu
-              ListTile(
-                title: Text(
-                  "${this.pinPoints[index].title}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle:
-                    Text("${this.pinPoints[index].location}".toUpperCase()),
-                dense: true,
-              ),
-            ],
+        return InkWell(
+          onTap: () => _goFromCardsScreenToDetailed(this.pinPoints[index]),
+          onLongPress: () =>
+              _cardsScreenModalBottomSheet(this.pinPoints[index]),
+          child: Card(
+            key:
+                UniqueKey(), // TODO: objectKey instead since each object couldn't possibly be the same??
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _cardListTileWidget(
+                    this.pinPoints[index].imgUrl,
+                    this.pinPoints[index].title,
+                    this.pinPoints[index].location),
+              ],
+            ),
           ),
         );
       },
