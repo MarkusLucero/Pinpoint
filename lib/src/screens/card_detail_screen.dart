@@ -18,11 +18,16 @@ class CardDetailScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              ClipRRect(
-                child: Image.network(
-                  "${pinPoint.imgUrl}",
-                  fit: BoxFit.contain,
-                  height: 250,
+              Hero(
+                tag: pinPoint.imgUrl +
+                    pinPoint.title +
+                    pinPoint.location, //FIXME: Shit tag?
+                child: ClipRRect(
+                  child: Image.network(
+                    "${pinPoint.imgUrl}",
+                    fit: BoxFit.contain,
+                    height: 250,
+                  ),
                 ),
               ),
               // TODO: This shouldnt be a ListTile..

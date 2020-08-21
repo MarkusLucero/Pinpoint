@@ -85,10 +85,13 @@ class PinPointCardsScreen extends StatelessWidget {
 
   Widget _cardListTileWidget(String imgUrl, String title, String location) {
     return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.amber[100],
-        backgroundImage: NetworkImage(
-          imgUrl,
+      leading: Hero(
+        tag: imgUrl + title + location, // FIXME: Shit tag?
+        child: CircleAvatar(
+          backgroundColor: Colors.amber[100],
+          backgroundImage: NetworkImage(
+            imgUrl,
+          ),
         ),
       ),
       title: Text(
