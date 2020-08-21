@@ -17,34 +17,45 @@ class CardDetailScreen extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Hero(
                 tag: pinPoint.imgUrl +
                     pinPoint.title +
                     pinPoint.location, //FIXME: Shit tag?
-                child: ClipRRect(
-                  child: Image.network(
-                    "${pinPoint.imgUrl}",
-                    fit: BoxFit.contain,
-                    height: 250,
+                child: Center(
+                  child: ClipRRect(
+                    child: Image.network(
+                      pinPoint.imgUrl,
+                      fit: BoxFit.contain,
+                      height: 250,
+                    ),
                   ),
                 ),
               ),
-              // TODO: This shouldnt be a ListTile..
-              ListTile(
-                title: Text(
-                  "${pinPoint.title}",
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 10,
+                ),
+                child: Text(
+                  pinPoint.title,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 24,
                   ),
                 ),
-                subtitle: Text("${pinPoint.location}".toUpperCase()),
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.edit),
+              ),
+              Text(
+                pinPoint.location.toUpperCase(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 10,
+                ),
+                child: Text(
+                  pinPoint.notes,
                 ),
               ),
-              Text("${pinPoint.notes}"),
             ],
           ),
         ),
