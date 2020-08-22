@@ -94,6 +94,24 @@ class PinPointsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void editTitle(int index, String title) {
+    if (title != "") {
+      _sharedData.pinPoints[index].title = title;
+      notifyListeners();
+    } else {
+      return;
+    }
+  }
+
+  void editNotes(int index, String notes) {
+    if (notes != "") {
+      _sharedData.pinPoints[index].notes = notes;
+      notifyListeners();
+    } else {
+      return;
+    }
+  }
+
   // TODO:
   void editLocationByMovingMarker() {}
   // TODO:
