@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 import '../src/added_marker_modal.dart';
+import '../src/services/pinpoints_list_service.dart';
+import 'package:provider/provider.dart';
+import '../src/models/pin_point_model.dart';
 
 class PinPointMap extends StatefulWidget {
-  //Override because the widget manages its own state
   @override
-  //Builds the PinPointMapState widget.
   _PinPointMapState createState() => _PinPointMapState();
 }
 
@@ -15,33 +16,52 @@ class PinPointMap extends StatefulWidget {
 class _PinPointMapState extends State<PinPointMap> {
   Completer<GoogleMapController> _controller = Completer();
 
-  ///This set contains all markers placed on the map
-  Set<Marker> _markers = Set<Marker>();
-
   String _address = "";
   String title;
   Marker latest;
 
+  void addToPinPointList(BuildContext context, pinPoint) {
+    Provider.of<PinPointsService>(context, listen: false).addPinPoint(pinPoint);
+  }
+
+  //adds a marker to the list if user taps AND enters a title
+  void addToMarkerList(BuildContext context, pinPoint) {
+    Provider.of<PinPointsService>(context, listen: false).addMarker(pinPoint);
+  }
+
+  void updateTitle(String newTitle) {
+    print(newTitle);
+    this.title = newTitle;
+    print(this.title);
+  }
+
   ///Function that handles the tap event. I.e clicking to set a marker
   void _handleTap(LatLng point) async {
     await _findPlaceFromCoords(point);
-    showModalBottomSheet(
+    await showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       builder: (context) => AddedMarkerModal(
-        title: title,
+        title: this.title,
+        updateTitleCallback: updateTitle,
       ),
       isScrollControlled: true,
     );
-    if (title != null) {
+    if (this.title != null) {
       setState(() {
-        _markers.add(Marker(
-            markerId: MarkerId(UniqueKey().toString()),
-            position: point,
-            infoWindow: InfoWindow(title: _address, snippet: "Test"),
-            icon: BitmapDescriptor.defaultMarker));
+        //Assembles a marker and adds it to the Markerlist stored in services
+        addToMarkerList(
+            context,
+            Marker(
+                markerId: MarkerId(UniqueKey().toString()),
+                position: point,
+                infoWindow: InfoWindow(title: _address, snippet: "Test"),
+                icon: BitmapDescriptor.defaultMarker));
       });
+      addToPinPointList(context,
+          PinPoint(title: title, notes: "", imgUrl: "", location: _address));
     }
+    title = null;
   }
 
   ///Function that gets the coordinates of the marker and sets the address accordingly"
@@ -61,6 +81,8 @@ class _PinPointMapState extends State<PinPointMap> {
 
   @override
   Widget build(BuildContext context) {
+    Set<Marker> _markers =
+        Provider.of<PinPointsService>(context).markers.toSet();
     return Scaffold(
 
         ///Stack allows multiple widgets to be placed ontop of eachother. E.g stuff on the map.

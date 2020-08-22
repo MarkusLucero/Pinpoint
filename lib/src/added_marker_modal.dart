@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddedMarkerModal extends StatefulWidget {
-  String title;
-  AddedMarkerModal({@required this.title});
+  final String title;
+  final Function(String) updateTitleCallback;
+  AddedMarkerModal({@required this.title, this.updateTitleCallback});
 
   @override
   _AddedMarkerModalState createState() => _AddedMarkerModalState();
@@ -41,9 +42,8 @@ class _AddedMarkerModalState extends State<AddedMarkerModal> {
                   width: 60.0,
                   height: 60.0,
                   child: RawMaterialButton(
-                    onPressed: () => setState(() {
-                      widget.title = textController.text;
-                    }),
+                    onPressed: () =>
+                        {widget.updateTitleCallback(textController.text)},
                     shape: CircleBorder(),
                     child: Text(
                       "Save",

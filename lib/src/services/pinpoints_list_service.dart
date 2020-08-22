@@ -64,11 +64,20 @@ class PinPointsService extends ChangeNotifier {
   UnmodifiableListView<PinPoint> get pinPoints =>
       UnmodifiableListView(_sharedData.pinPoints);
 
+  // An unmodifiable view of the markers stored on the map.
+  UnmodifiableListView<Marker> get markers =>
+      UnmodifiableListView(_sharedData.markers);
+
   // Adds [pinPoint] to list. This is the only way to modify the pinPoint list from outside.
   //FIXME: adds come through the map --- fix this function @Markus
-  void add(PinPoint pinPoint) {
+  void addPinPoint(PinPoint pinPoint) {
     _sharedData.pinPoints.add(pinPoint);
     // This call tells the widgets that are listening to this model to rebuild.
+    notifyListeners();
+  }
+
+  void addMarker(Marker marker) {
+    _sharedData.markers.add(marker);
     notifyListeners();
   }
 
