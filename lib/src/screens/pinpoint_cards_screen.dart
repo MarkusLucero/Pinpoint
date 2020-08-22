@@ -62,6 +62,14 @@ class PinPointCardsScreen extends StatelessWidget {
     );
   }
 
+  void _hideKeyboard(BuildContext ctx) {
+    // Will remove the keyboard
+    FocusScopeNode currentFocus = FocusScope.of(ctx);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+    }
+  }
+
   /* 
     Used to store the text of input to TextFields in _showEditPullUpModal
    */
@@ -82,67 +90,66 @@ class PinPointCardsScreen extends StatelessWidget {
       isScrollControlled: true,
       shape: _getBottomSheetShape(),
       builder: (context) => SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.75,
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SafeArea(
-              child: ListView(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        whatIsBeingEdited == "title" ? "Title" : "Notes",
-                        style: TextStyle(
-                          //height: 3,
-                          fontSize: 18,
+        child: GestureDetector(
+          onTap: () => _hideKeyboard(context),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.80,
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SafeArea(
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          whatIsBeingEdited == "title" ? "Title" : "Notes",
+                          style: TextStyle(
+                            //height: 3,
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        color: Colors.green[200],
-                        icon: Icon(
-                          Icons.check_circle,
+                        IconButton(
+                          color: Colors.green[200],
+                          icon: Icon(
+                            Icons.check_circle,
+                          ),
+                          onPressed: () {
+                            _hideKeyboard(context);
+                            // only update if user has actually written something new
+                            if (whatIsBeingEdited == "title") {
+                              if ((_controllerEditTitle.text !=
+                                  pinPoint.title)) {
+                                _editTitleOfPinPointFromList(
+                                    index, _controllerEditTitle.text, context);
+                              }
+                            } else {
+                              if ((_controllerEditNotes.text !=
+                                  pinPoint.notes)) {
+                                _editNotesOfPinPointFromList(
+                                    index, _controllerEditNotes.text, context);
+                              }
+                            }
+                            Navigator.pop(context);
+                          },
                         ),
-                        onPressed: () {
-                          // Will remove the keyboard
-                          FocusScopeNode currentFocus = FocusScope.of(context);
-                          if (!currentFocus.hasPrimaryFocus &&
-                              currentFocus.focusedChild != null) {
-                            WidgetsBinding.instance.focusManager.primaryFocus
-                                ?.unfocus();
-                          }
-                          // only update if user has actually written something new
-                          if (whatIsBeingEdited == "title") {
-                            if ((_controllerEditTitle.text != pinPoint.title)) {
-                              _editTitleOfPinPointFromList(
-                                  index, _controllerEditTitle.text, context);
-                            }
-                          } else {
-                            if ((_controllerEditNotes.text != pinPoint.notes)) {
-                              _editNotesOfPinPointFromList(
-                                  index, _controllerEditNotes.text, context);
-                            }
-                          }
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ],
-                  ),
-                  TextField(
-                    controller: whatIsBeingEdited == "title"
-                        ? _controllerEditTitle
-                        : _controllerEditNotes,
-                    autofocus: true,
-                    cursorColor: Colors.amber,
-                    maxLines: whatIsBeingEdited == "title" ? 1 : null,
-                    keyboardType: whatIsBeingEdited == "title"
-                        ? TextInputType.text
-                        : TextInputType.multiline,
-                  ),
-                ],
+                      ],
+                    ),
+                    TextField(
+                      controller: whatIsBeingEdited == "title"
+                          ? _controllerEditTitle
+                          : _controllerEditNotes,
+                      autofocus: true,
+                      cursorColor: Colors.amber,
+                      maxLines: whatIsBeingEdited == "title" ? 1 : 10,
+                      keyboardType: whatIsBeingEdited == "title"
+                          ? TextInputType.text
+                          : TextInputType.multiline,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
