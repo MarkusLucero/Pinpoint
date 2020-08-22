@@ -17,29 +17,45 @@ class CardDetailScreen extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                child: Image.network(
-                  "${pinPoint.imgUrl}",
-                  fit: BoxFit.contain,
-                  height: 250,
-                ),
-              ),
-              // TODO: This shouldnt be a ListTile..
-              ListTile(
-                title: Text(
-                  "${pinPoint.title}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+              Hero(
+                tag: pinPoint.imgUrl +
+                    pinPoint.title +
+                    pinPoint.location, //FIXME: Shit tag?
+                child: Center(
+                  child: ClipRRect(
+                    child: Image.network(
+                      pinPoint.imgUrl,
+                      fit: BoxFit.contain,
+                      height: 250,
+                    ),
                   ),
                 ),
-                subtitle: Text("${pinPoint.location}".toUpperCase()),
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.edit),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 10,
+                ),
+                child: Text(
+                  pinPoint.title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 24,
+                  ),
                 ),
               ),
-              Text("${pinPoint.notes}"),
+              Text(
+                pinPoint.location.toUpperCase(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 10,
+                ),
+                child: Text(
+                  pinPoint.notes,
+                ),
+              ),
             ],
           ),
         ),
