@@ -61,6 +61,7 @@ class _PinPointMapState extends State<PinPointMap> {
       addToPinPointList(context,
           PinPoint(title: title, notes: "", imgUrl: "", location: _address));
     }
+    //reset title in order to;
     title = null;
   }
 
