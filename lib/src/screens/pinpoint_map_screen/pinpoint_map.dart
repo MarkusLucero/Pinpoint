@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';
-import '../src/added_marker_modal.dart';
-import '../src/services/pinpoints_list_service.dart';
+import 'added_marker_modal.dart';
+import '../../services/pinpoints_list_service.dart';
 import 'package:provider/provider.dart';
-import '../src/models/pin_point_model.dart';
+import '../../models/pin_point_model.dart';
 
-class PinPointMap extends StatefulWidget {
+class PinPointMapScreen extends StatefulWidget {
   @override
-  _PinPointMapState createState() => _PinPointMapState();
+  _PinPointMapScreenState createState() => _PinPointMapScreenState();
 }
 
 /// This widget creates the map layout and define the map attributes
-class _PinPointMapState extends State<PinPointMap> {
+class _PinPointMapScreenState extends State<PinPointMapScreen> {
   Completer<GoogleMapController> _controller = Completer();
 
   String _address = "";

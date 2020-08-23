@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'pinpoint_map.dart';
-import 'screens/pinpoint_cards_screen.dart';
+import '../screens/pinpoint_map_screen/pinpoint_map.dart';
+import '../screens/pinpoint_cards_screen/pinpoint_cards_screen.dart';
 
 class TabBarNav extends StatelessWidget {
   @override
@@ -23,7 +23,7 @@ class TabBarNav extends StatelessWidget {
         ),
         body: TabBarView(physics: NeverScrollableScrollPhysics(), children: [
           PinPointCardsScreen(),
-          PinPointMap(),
+          PinPointMapScreen(),
         ]),
       ),
     );

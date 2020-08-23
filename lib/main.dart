@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'src/tabs_navigation.dart';
+import 'src/navigation/tabs_navigation.dart';
 import 'src/services/pinpoints_list_service.dart';
 
 void main() => runApp(
