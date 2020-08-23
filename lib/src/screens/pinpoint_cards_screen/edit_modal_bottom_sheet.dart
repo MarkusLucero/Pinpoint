@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../services/pinpoints_list_service.dart';
 import '../../shapes/bottom_sheet_border_shape.dart';
 import '../../models/pin_point_model.dart';
+import '../../functions/hide_keyboard.dart';
 
 /* 
     Will edit the title of the pinPoint after pressing the check mark button
@@ -18,14 +19,6 @@ void _editTitleOfPinPointFromList(
 void _editNotesOfPinPointFromList(
     int index, String notes, BuildContext context) {
   Provider.of<PinPointsService>(context, listen: false).editNotes(index, notes);
-}
-
-void _hideKeyboard(BuildContext ctx) {
-  // Will remove the keyboard
-  FocusScopeNode currentFocus = FocusScope.of(ctx);
-  if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-    WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
-  }
 }
 
 /* 
@@ -49,7 +42,7 @@ void editPullUpModal(PinPoint pinPoint, int index, BuildContext context,
     shape: getBottomSheetShape(),
     builder: (context) => SingleChildScrollView(
       child: GestureDetector(
-        onTap: () => _hideKeyboard(context),
+        onTap: () => hideKeyboard(context),
         child: Container(
           height: MediaQuery.of(context).size.height * 0.80,
           padding:
@@ -75,7 +68,7 @@ void editPullUpModal(PinPoint pinPoint, int index, BuildContext context,
                           Icons.check_circle,
                         ),
                         onPressed: () {
-                          _hideKeyboard(context);
+                          hideKeyboard(context);
                           // only update if user has actually written something new
                           if (whatIsBeingEdited == "title") {
                             if ((_controllerEditTitle.text != pinPoint.title)) {

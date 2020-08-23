@@ -71,6 +71,8 @@ class PinPointsService extends ChangeNotifier {
   // Adds [pinPoint] to list. This is the only way to modify the pinPoint list from outside.
   //FIXME: adds come through the map --- fix this function @Markus
   void addPinPoint(PinPoint pinPoint) {
+    pinPoint.imgUrl = pinPoint.imgUrl ??
+        "https://medioteket.gavle.se/assets/img/error/img.png"; // default pic if not provided
     _sharedData.pinPoints.add(pinPoint);
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:pinpoint/src/shapes/bottom_sheet_border_shape.dart';
 import 'added_marker_modal.dart';
 import '../../services/pinpoints_list_service.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     await _findPlaceFromCoords(point);
     await showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+      shape: getBottomSheetShape(),
       builder: (context) => AddedMarkerModal(
         title: this.title,
         updateTitleCallback: updateTitle,
@@ -59,7 +60,7 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
                 icon: BitmapDescriptor.defaultMarker));
       });
       addToPinPointList(context,
-          PinPoint(title: title, notes: "", imgUrl: "", location: _address));
+          PinPoint(title: title, notes: "", imgUrl: null, location: _address));
     }
     title = null;
   }
