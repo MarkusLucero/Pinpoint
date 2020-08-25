@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 Widget cardListTileWidget(String imgUrl, String title, String location) {
-  print("in list tile:  $imgUrl, $title, $location");
   return ListTile(
     leading: Hero(
       tag: imgUrl + title + location, // FIXME: Shit tag?
