@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-Widget cardListTileWidget(String imgUrl, String title, String location) {
+Widget cardListTileWidget(Image img, String title, String location) {
   return ListTile(
     leading: Hero(
-      tag: imgUrl + title + location, // FIXME: Shit tag?
+      tag: title + location, // FIXME: Shit tag?
       child: CircleAvatar(
         backgroundColor: Colors.amber[100],
-        backgroundImage: NetworkImage(
-          imgUrl,
-        ),
+        backgroundImage: img != null
+            ? img.image
+            : NetworkImage(
+                "https://medioteket.gavle.se/assets/img/error/img.png", //FIXME: use img from assets folder
+              ),
       ),
     ),
     title: Text(

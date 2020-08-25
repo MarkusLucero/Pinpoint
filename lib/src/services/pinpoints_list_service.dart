@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:pinpoint/src/db/database_helper.dart';
+import 'package:pinpoint/src/functions/base64.dart';
 import 'package:pinpoint/src/models/shared_data_tuple_model.dart';
 import 'package:pinpoint/src/models/internal_marker_model.dart';
 import '../models/pin_point_model.dart';
@@ -31,6 +35,7 @@ class PinPointsService extends ChangeNotifier {
   UnmodifiableListView<Marker> get markers {
     List<Marker> markers = List<Marker>();
     _sharedData.markers.forEach((mark) {
+      print("this is a title ${mark.title}");
       markers.add(
         Marker(
           markerId: MarkerId(mark.id.toString()),
@@ -85,7 +90,7 @@ class PinPointsService extends ChangeNotifier {
     if (title != "") {
       PinPoint pinPoint = _sharedData.pinPoints[index];
       pinPoint.title = title;
-      InternalMarker marker = _getMarkerOf(pinPoint.id);
+      InternalMarker marker = _getMarkerOfItsPinPointId(pinPoint.id);
       marker.title = title;
       DatabaseHelper databaseHelper = DatabaseHelper.db;
       await databaseHelper.update(pinPoint, marker, true);
@@ -95,16 +100,49 @@ class PinPointsService extends ChangeNotifier {
     }
   }
 
-  InternalMarker _getMarkerOf(int id) {
+  InternalMarker _getMarkerOfItsPinPointId(int pinPointId) {
     InternalMarker found;
     _sharedData.markers.forEach((marker) {
-      print("${marker.pinPointId}");
-      print("$id");
-      if (marker.pinPointId == id) {
+      if (marker.pinPointId == pinPointId) {
         found = marker;
       }
     });
     return found;
+  }
+
+  InternalMarker _getMarkerOf(int markerId) {
+    InternalMarker found;
+    _sharedData.markers.forEach((marker) {
+      if (marker.id == markerId) {
+        found = marker;
+      }
+    });
+    return found;
+  }
+
+  PinPoint _getPinPointOf(int pinPointId) {
+    PinPoint found;
+    _sharedData.pinPoints.forEach((pinPoint) {
+      if (pinPoint.id == pinPointId) {
+        found = pinPoint;
+      }
+    });
+    return found;
+  }
+
+/* Fetch marker of corresponding pinPoint id */
+  InternalMarker fetchMarkerOfItsPinPointId(int pinPointId) {
+    return _getMarkerOfItsPinPointId(pinPointId);
+  }
+
+/* Fetch marker of corresponding marker id */
+  InternalMarker fetchMarker(int markerId) {
+    return _getMarkerOf(markerId);
+  }
+
+/* Fetch pinPoint of corresponding pinPoint id */
+  PinPoint fetchPinPoint(int pinPointId) {
+    return _getPinPointOf(pinPointId);
   }
 
   void editNotes(int index, String notes) async {
@@ -113,5 +151,23 @@ class PinPointsService extends ChangeNotifier {
     DatabaseHelper databaseHelper = DatabaseHelper.db;
     await databaseHelper.update(pinPoint, null, false);
     _refreshPinPoints();
+  }
+
+  void editImage(int pinPointId, File imgFile) async {
+    Uint8List imgBytes = imgFile.readAsBytesSync();
+    String base64Image = base64String(imgBytes);
+    PinPoint pinPoint = _getPinPointOf(pinPointId);
+    pinPoint.img = base64Image;
+    DatabaseHelper databaseHelper = DatabaseHelper.db;
+    await databaseHelper.update(pinPoint, null, false);
+    _refreshPinPoints();
+  }
+
+  Image getImage(int pinPointId) {
+    PinPoint pinPoint = _getPinPointOf(pinPointId);
+    if (pinPoint.img == "") return null;
+    Uint8List dataBytes = dataFromBase64String(pinPoint.img);
+    Image img = Image.memory(dataBytes);
+    return img;
   }
 }
