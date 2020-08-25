@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:pinpoint/src/models/internal_marker_model.dart';
+import 'package:pinpoint/src/screens/pinpoint_cards_screen/pinpoint_cards_screen.dart';
 import 'package:pinpoint/src/shapes/bottom_sheet_border_shape.dart';
 import 'added_marker_modal.dart';
 import '../../services/pinpoints_list_service.dart';
 import 'package:provider/provider.dart';
 import '../../models/pin_point_model.dart';
+import '../card_detail_screen/card_detail_screen.dart';
 
 class PinPointMapScreen extends StatefulWidget {
   @override
@@ -29,6 +31,10 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     Provider.of<PinPointsService>(context, listen: false).add(pinPoint, marker);
   }
 
+  PinPoint _getPinPoint(BuildContext context, int id) {
+    Provider.of<PinPointsService>(context, listen: false).getPinPointOf(id);
+  }
+
   //Updates current title to not be null allowing marker placement
   void updateTitle(String newTitle) {
     print(newTitle);
@@ -42,10 +48,12 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
   }
 
   Set<Marker> _convertInternalMarkersToMarkers(BuildContext context) {
+    int index = 0;
     List<InternalMarker> internalMarkers =
         Provider.of<PinPointsService>(context).markers;
     Set<Marker> markers = Set<Marker>();
     internalMarkers.forEach((mark) {
+      PinPoint current = _getPinPoint(context, index);
       markers.add(
         Marker(
           markerId: MarkerId(mark.id.toString()),
@@ -58,11 +66,21 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
             snippet: "Test",
           ),
           icon: BitmapDescriptor.defaultMarker,
-          onTap: () => ({print("hello")}),
+          onTap: () => (_goFromMarkerToDetailed(current, context)),
         ),
       );
+      index++;
     });
     return markers;
+  }
+
+  void _goFromMarkerToDetailed(PinPoint pinPoint, context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CardDetailScreen(pinPoint: pinPoint),
+      ),
+    );
   }
 
   //moves camera to where you click on map. Factors in current zoom.
