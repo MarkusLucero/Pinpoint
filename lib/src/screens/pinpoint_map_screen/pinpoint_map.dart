@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:pinpoint/src/models/internal_marker_model.dart';
 import 'package:pinpoint/src/shapes/bottom_sheet_border_shape.dart';
 import 'added_marker_modal.dart';
 import '../../services/pinpoints_list_service.dart';
@@ -21,13 +22,10 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
   String title;
   Marker latest;
 
-  void addToPinPointList(BuildContext context, pinPoint) {
-    Provider.of<PinPointsService>(context, listen: false).addPinPoint(pinPoint);
-  }
-
-  //adds a marker to the list if user taps AND enters a title
-  void addToMarkerList(BuildContext context, pinPoint) {
-    Provider.of<PinPointsService>(context, listen: false).addMarker(pinPoint);
+  void _add(BuildContext context, pinPoint, marker) {
+    print("pinpoint in map: ${pinPoint.toMap()}");
+    print("marker in map: ${marker.toMap()}");
+    Provider.of<PinPointsService>(context, listen: false).add(pinPoint, marker);
   }
 
   void updateTitle(String newTitle) {
@@ -49,18 +47,18 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
       isScrollControlled: true,
     );
     if (this.title != null) {
-      setState(() {
-        //Assembles a marker and adds it to the Markerlist stored in services
-        addToMarkerList(
-            context,
-            Marker(
-                markerId: MarkerId(UniqueKey().toString()),
-                position: point,
-                infoWindow: InfoWindow(title: _address, snippet: "Test"),
-                icon: BitmapDescriptor.defaultMarker));
-      });
-      addToPinPointList(context,
-          PinPoint(title: title, notes: "", imgUrl: null, location: _address));
+      _add(
+          context,
+          PinPoint(
+              title: this.title,
+              notes: "",
+              imgUrl: "https://medioteket.gavle.se/assets/img/error/img.png",
+              location: _address),
+          InternalMarker(
+            latitude: point.latitude,
+            longitude: point.longitude,
+            title: this.title,
+          ));
     }
     title = null;
   }

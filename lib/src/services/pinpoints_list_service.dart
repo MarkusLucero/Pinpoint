@@ -1,3 +1,6 @@
+import 'package:pinpoint/src/db/database_helper.dart';
+import 'package:pinpoint/src/models/shared_data_tuple_model.dart';
+import 'package:pinpoint/src/models/internal_marker_model.dart';
 import '../models/pin_point_model.dart';
 import 'dart:collection';
 import 'package:flutter/material.dart';
@@ -5,126 +8,110 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SharedData {
   List<PinPoint> pinPoints;
-  List<Marker> markers;
+  List<InternalMarker> markers;
 
   SharedData(this.pinPoints, this.markers);
 }
 
-// mockup data
-List<PinPoint> fakePinPoints = [
-  PinPoint(
-    title: "The best location",
-    notes: "this place was actually pretty cool let me tell u that my friends",
-    imgUrl: "https://medioteket.gavle.se/assets/img/error/img.png",
-    location: "Uppsala",
-  ),
-  PinPoint(
-    title: "The best location",
-    notes: "this place was actually pretty cool let me tell u that my friends",
-    imgUrl: "https://medioteket.gavle.se/assets/img/error/img.png",
-    location: "Stockholm",
-  ),
-  PinPoint(
-    title: "The best location",
-    notes: "this place was actually pretty cool let me tell u that my friends",
-    imgUrl:
-        "https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?ixlib=rb-1.2.1&w=1000&q=80",
-    location: "Göteborg",
-  ),
-  PinPoint(
-    title: "The best location",
-    notes: "this place was actually pretty cool let me tell u that my friends",
-    imgUrl: "https://medioteket.gavle.se/assets/img/error/img.png",
-    location: "Paris",
-  ),
-  PinPoint(
-    title: "The best location",
-    notes: "this place was actually pretty cool let me tell u that my friends",
-    imgUrl:
-        "https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg",
-    location: "London",
-  ),
-  PinPoint(
-    title: "The best location",
-    notes: "this place was actually pretty cool let me tell u that my friends",
-    imgUrl:
-        "https://cdn.pixabay.com/photo/2015/02/24/15/41/dog-647528__340.jpg",
-    location: "Amsterdam",
-  ),
-];
-
 class PinPointsService extends ChangeNotifier {
   // Internal, private state of the pin points and markers
-  // TODO: FETCH REAL DATA FROM USER DEVICE STORAGE
+  SharedData _sharedData = SharedData([], []);
 
-// FIXME: add the list of markers as the second arg
-  final SharedData _sharedData = SharedData(fakePinPoints, []);
+  // this service will att first load call _refreshPinPoints() to populate the sharedData with data from DB
+  PinPointsService() {
+    _refreshPinPoints();
+  }
 
   // An unmodifiable view of the items in the cart.
   UnmodifiableListView<PinPoint> get pinPoints =>
       UnmodifiableListView(_sharedData.pinPoints);
 
   // An unmodifiable view of the markers stored on the map.
-  UnmodifiableListView<Marker> get markers =>
-      UnmodifiableListView(_sharedData.markers);
+  // since we store them with our own datatype we need to convert them to type Marker
+  UnmodifiableListView<Marker> get markers {
+    List<Marker> markers = List<Marker>();
+    _sharedData.markers.forEach((mark) {
+      markers.add(
+        Marker(
+          markerId: MarkerId(mark.id.toString()),
+          position: LatLng(
+            mark.latitude,
+            mark.longitude,
+          ),
+          infoWindow: InfoWindow(
+            title: mark.title,
+            snippet: "Test",
+          ),
+          icon: BitmapDescriptor.defaultMarker,
+        ),
+      );
+    });
+    return UnmodifiableListView(markers);
+  }
 
-  // Adds [pinPoint] to list. This is the only way to modify the pinPoint list from outside.
-  //FIXME: adds come through the map --- fix this function @Markus
-  void addPinPoint(PinPoint pinPoint) {
-    pinPoint.imgUrl = pinPoint.imgUrl ??
-        "https://medioteket.gavle.se/assets/img/error/img.png"; // default pic if not provided
-    _sharedData.pinPoints.add(pinPoint);
+/* 
+  Will make a call to db instance to update the data of _sharedData to correspond with the data in db
+  
+  So each change of state will always make sure that the db corresponds with _sharedData 
+  /FIXME: is this good practice????
+ */
+  Future _refreshPinPoints() async {
+    DatabaseHelper databaseHelper = DatabaseHelper.db;
+    _sharedData.pinPoints = await databaseHelper.getPinPoints();
+/*     _sharedData.pinPoints.forEach((element) {
+      print("in shared data pinPoint: ${element.toMap()}");
+    }); */
+    _sharedData.markers = await databaseHelper.getMarkers();
+
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
 
-  void addMarker(Marker marker) {
-    _sharedData.markers.add(marker);
-    notifyListeners();
+  void add(PinPoint pinPoint, InternalMarker marker) async {
+    DatabaseHelper databaseHelper = DatabaseHelper.db;
+    SharedDataTuple sd = await databaseHelper.insert(pinPoint, marker);
+    //sd is the pinpoint and marker inserted into the db
+    _refreshPinPoints();
   }
 
-  // remove pinpoint at index from the list. //TODO: perhaps better to use index? since widget will show in same order as list here
-  void remove(/* PinPoint pinPoint */ int index) {
-    _sharedData.pinPoints.removeAt(index);
-    notifyListeners();
+  void remove(/* PinPoint pinPoint */ int index) async {
+    PinPoint toBeRemoved = _sharedData.pinPoints[index];
+    DatabaseHelper databaseHelper = DatabaseHelper.db;
+    await databaseHelper.delete(toBeRemoved.id);
+    _refreshPinPoints();
   }
 
-  // edit pinpoint at index in list, [edited_title, edited_notes]
-  void edit(int index, List<String> args) {
-    if ((args.length > 2 || args.length == 0) ||
-        (args[0] == "" && args[1] == "")) {
-      return; // can only edit title and notes since img is changed from other place and location is retrieved from marker on the map.
-    } else {
-      if (args[0] != "") {
-        _sharedData.pinPoints[index].title = args[0];
-      }
-      if (args[1] != "") {
-        _sharedData.pinPoints[index].notes = args[1];
-      }
-    }
-    notifyListeners();
-  }
-
-  void editTitle(int index, String title) {
+  void editTitle(int index, String title) async {
     if (title != "") {
-      _sharedData.pinPoints[index].title = title;
-      notifyListeners();
+      PinPoint pinPoint = _sharedData.pinPoints[index];
+      pinPoint.title = title;
+      InternalMarker marker = _getMarkerOf(pinPoint.id);
+      marker.title = title;
+      DatabaseHelper databaseHelper = DatabaseHelper.db;
+      await databaseHelper.update(pinPoint, marker, true);
+      _refreshPinPoints();
     } else {
       return;
     }
   }
 
-  void editNotes(int index, String notes) {
-    if (notes != "") {
-      _sharedData.pinPoints[index].notes = notes;
-      notifyListeners();
-    } else {
-      return;
-    }
+  InternalMarker _getMarkerOf(int id) {
+    InternalMarker found;
+    _sharedData.markers.forEach((marker) {
+      print("${marker.pinPointId}");
+      print("$id");
+      if (marker.pinPointId == id) {
+        found = marker;
+      }
+    });
+    return found;
   }
 
-  // TODO:
-  void editLocationByMovingMarker() {}
-  // TODO:
-  void changeImageOfPinPoint() {}
+  void editNotes(int index, String notes) async {
+    PinPoint pinPoint = _sharedData.pinPoints[index];
+    pinPoint.notes = notes;
+    DatabaseHelper databaseHelper = DatabaseHelper.db;
+    await databaseHelper.update(pinPoint, null, false);
+    _refreshPinPoints();
+  }
 }

@@ -37,8 +37,7 @@ class PinPointCardsScreen extends StatelessWidget {
           onLongPress: () =>
               cardsScreenModalBottomSheet(pinPoints[index], index, context),
           child: Card(
-            key:
-                UniqueKey(), // TODO: objectKey instead since each object couldn't possibly be the same??
+            key: Key(pinPoints[index].id.toString()),
             child: cardListTileWidget(pinPoints[index].imgUrl,
                 pinPoints[index].title, pinPoints[index].location),
           ),
