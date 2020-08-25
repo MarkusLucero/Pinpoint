@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../models/pin_point_model.dart';
 import '../../shapes/bottom_sheet_border_shape.dart';
 import '../card_detail_screen/card_detail_screen.dart';
@@ -46,6 +48,11 @@ void cardsScreenModalBottomSheet(
             title: Text("Open"),
           ),
           ListTile(
+            onTap: () => _getImage(pinPoint, context),
+            leading: Icon(Icons.image),
+            title: Text("Add Image"),
+          ),
+          ListTile(
             onTap: () => editPullUpModal(pinPoint, index, context, "title"),
             leading: Icon(Icons.edit),
             title: Text("Edit title"),
@@ -64,4 +71,14 @@ void cardsScreenModalBottomSheet(
       ),
     ),
   );
+}
+
+void _getImage(PinPoint pinPoint, BuildContext context) async {
+  final picker = ImagePicker();
+  final PickedFile pickedFile =
+      await picker.getImage(source: ImageSource.gallery);
+  final _image = File(pickedFile.path);
+
+  Provider.of<PinPointsService>(context, listen: false)
+      .editImage(pinPoint.id, _image);
 }

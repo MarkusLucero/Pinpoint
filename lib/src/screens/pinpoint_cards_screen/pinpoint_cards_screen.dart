@@ -38,11 +38,16 @@ class PinPointCardsScreen extends StatelessWidget {
               cardsScreenModalBottomSheet(pinPoints[index], index, context),
           child: Card(
             key: Key(pinPoints[index].id.toString()),
-            child: cardListTileWidget(pinPoints[index].imgUrl,
+            child: cardListTileWidget(_getImage(context, pinPoints[index].id),
                 pinPoints[index].title, pinPoints[index].location),
           ),
         );
       },
     );
+  }
+
+  _getImage(BuildContext ctx, int id) {
+    Image img = Provider.of<PinPointsService>(ctx).getImage(id);
+    return img;
   }
 }

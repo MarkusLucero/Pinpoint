@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:pinpoint/src/db/database_helper.dart';
+import 'package:pinpoint/src/functions/base64.dart';
 import 'package:pinpoint/src/models/shared_data_tuple_model.dart';
 import 'package:pinpoint/src/models/internal_marker_model.dart';
 import '../models/pin_point_model.dart';
@@ -31,6 +35,7 @@ class PinPointsService extends ChangeNotifier {
   UnmodifiableListView<Marker> get markers {
     List<Marker> markers = List<Marker>();
     _sharedData.markers.forEach((mark) {
+      print("this is a title ${mark.title}");
       markers.add(
         Marker(
           markerId: MarkerId(mark.id.toString()),
@@ -107,11 +112,39 @@ class PinPointsService extends ChangeNotifier {
     return found;
   }
 
+  PinPoint _getPinPointOf(int id) {
+    PinPoint found;
+    _sharedData.pinPoints.forEach((pinPoint) {
+      if (pinPoint.id == id) {
+        found = pinPoint;
+      }
+    });
+    return found;
+  }
+
   void editNotes(int index, String notes) async {
     PinPoint pinPoint = _sharedData.pinPoints[index];
     pinPoint.notes = notes;
     DatabaseHelper databaseHelper = DatabaseHelper.db;
     await databaseHelper.update(pinPoint, null, false);
     _refreshPinPoints();
+  }
+
+  void editImage(int pinPointId, File imgFile) async {
+    Uint8List imgBytes = imgFile.readAsBytesSync();
+    String base64Image = base64String(imgBytes);
+    PinPoint pinPoint = _getPinPointOf(pinPointId);
+    pinPoint.img = base64Image;
+    DatabaseHelper databaseHelper = DatabaseHelper.db;
+    await databaseHelper.update(pinPoint, null, false);
+    _refreshPinPoints();
+  }
+
+  Image getImage(int pinPointId) {
+    PinPoint pinPoint = _getPinPointOf(pinPointId);
+    if (pinPoint.img == "") return null;
+    Uint8List dataBytes = dataFromBase64String(pinPoint.img);
+    Image img = Image.memory(dataBytes);
+    return img;
   }
 }
