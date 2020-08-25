@@ -27,6 +27,7 @@ class PinPointsService extends ChangeNotifier {
       UnmodifiableListView(_sharedData.pinPoints);
 
   // An unmodifiable view of the markers stored on the map.
+  // since we store them with our own datatype we need to convert them to type Marker
   UnmodifiableListView<Marker> get markers {
     List<Marker> markers = List<Marker>();
     _sharedData.markers.forEach((mark) {
@@ -51,7 +52,8 @@ class PinPointsService extends ChangeNotifier {
 /* 
   Will make a call to db instance to update the data of _sharedData to correspond with the data in db
   
-  So each change of state will always make sure that the db corresponds with _sharedData /FIXME: is this good practice????
+  So each change of state will always make sure that the db corresponds with _sharedData 
+  /FIXME: is this good practice????
  */
   Future _refreshPinPoints() async {
     DatabaseHelper databaseHelper = DatabaseHelper.db;

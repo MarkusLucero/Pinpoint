@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import '../models/pin_point_model.dart';
 
 class DatabaseHelper {
+  /* NAME CONSTANTS */
   // change the name of DATABASE to get fresh db to work with in sim,
   // or turn of and on the sim again
   static const String DATABASE = "pinPointDB.db";
@@ -32,6 +33,7 @@ class DatabaseHelper {
     await db.execute('PRAGMA foreign_keys = ON');
   }
 
+/* the getter for the database */
   Future<Database> get database async {
     print("db called");
     if (_database != null) {
@@ -43,6 +45,9 @@ class DatabaseHelper {
     return _database;
   }
 
+/* 
+  Initialize the db and insert the two tables
+ */
   Future<Database> _initializeDatabase() async {
     // gets the db path on android or ios
     String dbPath = await getDatabasesPath();
@@ -59,7 +64,7 @@ class DatabaseHelper {
           "$COLUMN_TITLE TEXT,"
           "$COLUMN_NOTES TEXT,"
           "$COLUMN_IMG TEXT"
-          // "FOREIGN KEY($COLUMN_FK_M) REFERENCES $TABLE_MARKER($COLUMN_ID)"
+          // "FOREIGN KEY($COLUMN_FK_M) REFERENCES $TABLE_MARKER($COLUMN_ID)" /* FIXME: one to one relationship */
           ")",
         );
         await database.execute(
@@ -76,6 +81,9 @@ class DatabaseHelper {
     );
   }
 
+  /* 
+    extract pinPoints from db
+   */
   Future<List<PinPoint>> getPinPoints() async {
     print("getting list of pinPoints from db");
     final Database db = await database;
@@ -100,6 +108,9 @@ class DatabaseHelper {
     return listOfPinPoints;
   }
 
+  /* 
+    extract markers from db
+   */
   Future<List<InternalMarker>> getMarkers() async {
     print("getting list of pinPoints from db");
     final Database db = await database;
