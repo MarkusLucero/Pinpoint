@@ -100,46 +100,49 @@ class PinPointsService extends ChangeNotifier {
     }
   }
 
-  InternalMarker _getMarkerOfItsPinPointId(int id) {
+  InternalMarker _getMarkerOfItsPinPointId(int pinPointId) {
     InternalMarker found;
     _sharedData.markers.forEach((marker) {
-      if (marker.pinPointId == id) {
+      if (marker.pinPointId == pinPointId) {
         found = marker;
       }
     });
     return found;
   }
 
-  InternalMarker _getMarkerOf(int id) {
+  InternalMarker _getMarkerOf(int markerId) {
     InternalMarker found;
     _sharedData.markers.forEach((marker) {
-      if (marker.id == id) {
+      if (marker.id == markerId) {
         found = marker;
       }
     });
     return found;
   }
 
-  PinPoint _getPinPointOf(int id) {
+  PinPoint _getPinPointOf(int pinPointId) {
     PinPoint found;
     _sharedData.pinPoints.forEach((pinPoint) {
-      if (pinPoint.id == id) {
+      if (pinPoint.id == pinPointId) {
         found = pinPoint;
       }
     });
     return found;
   }
 
-  InternalMarker fetchMarkerOfItsPinPointId(int id) {
-    return _getMarkerOfItsPinPointId(id);
+/* Fetch marker of corresponding pinPoint id */
+  InternalMarker fetchMarkerOfItsPinPointId(int pinPointId) {
+    return _getMarkerOfItsPinPointId(pinPointId);
   }
 
-  InternalMarker fetchMarker(int id) {
-    return _getMarkerOf(id);
+/* Fetch marker of corresponding marker id */
+  InternalMarker fetchMarker(int markerId) {
+    return _getMarkerOf(markerId);
   }
 
-  PinPoint fetchPinPoint(int id) {
-    return _getPinPointOf(id);
+/* Fetch pinPoint of corresponding pinPoint id */
+  PinPoint fetchPinPoint(int pinPointId) {
+    return _getPinPointOf(pinPointId);
   }
 
   void editNotes(int index, String notes) async {
