@@ -5,9 +5,11 @@ import 'package:provider/provider.dart';
 
 class CardDetailScreen extends StatelessWidget {
   final PinPoint pinPoint;
+  final Image img;
 
   //kolla upp detta med nycklar
-  CardDetailScreen({Key key, @required this.pinPoint}) : super(key: key);
+  CardDetailScreen({Key key, @required this.pinPoint, this.img})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,19 @@ class CardDetailScreen extends StatelessWidget {
               Hero(
                 tag: pinPoint.title + pinPoint.location, //FIXME: Shit tag?
                 child: Center(
-                  child: _getImage(context, pinPoint.id),
+                  child: ClipRect(
+                    child: img != null
+                        ? Image(
+                            image: img.image,
+                            //fit: BoxFit.contain,
+                            height: 250,
+                          )
+                        : Image(
+                            image: AssetImage("assets/images/picNotFound.png"),
+                            fit: BoxFit.contain,
+                            height: 250,
+                          ),
+                  ),
                 ),
               ),
               Padding(
@@ -66,8 +80,8 @@ class CardDetailScreen extends StatelessWidget {
               //fit: BoxFit.contain,
               height: 250,
             )
-          : Image.network(
-              "https://medioteket.gavle.se/assets/img/error/img.png", //FIXME: use img from assets folder
+          : Image(
+              image: AssetImage("assets/images/picNotFound.png"),
               fit: BoxFit.contain,
               height: 250,
             ),
