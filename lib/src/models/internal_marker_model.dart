@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../db/database_helper.dart';
 
 class InternalMarker {
@@ -7,11 +9,7 @@ class InternalMarker {
   String title;
   int pinPointId;
 
-  InternalMarker({
-    this.latitude,
-    this.longitude,
-    this.title,
-  });
+  InternalMarker({this.latitude, this.longitude, this.title});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{

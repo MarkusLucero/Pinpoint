@@ -1,6 +1,7 @@
 import 'package:pinpoint/src/db/database_helper.dart';
 import 'package:pinpoint/src/models/shared_data_tuple_model.dart';
 import 'package:pinpoint/src/models/internal_marker_model.dart';
+import 'package:pinpoint/src/screens/card_detail_screen/card_detail_screen.dart';
 import '../models/pin_point_model.dart';
 import 'dart:collection';
 import 'package:flutter/material.dart';
@@ -28,26 +29,8 @@ class PinPointsService extends ChangeNotifier {
 
   // An unmodifiable view of the markers stored on the map.
   // since we store them with our own datatype we need to convert them to type Marker
-  UnmodifiableListView<Marker> get markers {
-    List<Marker> markers = List<Marker>();
-    _sharedData.markers.forEach((mark) {
-      markers.add(
-        Marker(
-          markerId: MarkerId(mark.id.toString()),
-          position: LatLng(
-            mark.latitude,
-            mark.longitude,
-          ),
-          infoWindow: InfoWindow(
-            title: mark.title,
-            snippet: "Test",
-          ),
-          icon: BitmapDescriptor.defaultMarker,
-        ),
-      );
-    });
-    return UnmodifiableListView(markers);
-  }
+  UnmodifiableListView<InternalMarker> get markers =>
+      UnmodifiableListView(_sharedData.markers);
 
 /* 
   Will make a call to db instance to update the data of _sharedData to correspond with the data in db
