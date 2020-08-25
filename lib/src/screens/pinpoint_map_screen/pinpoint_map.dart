@@ -26,8 +26,6 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
   double currentZoom = 18;
 
   void _add(BuildContext context, pinPoint, marker) {
-    print("pinpoint in map: ${pinPoint.toMap()}");
-    print("marker in map: ${marker.toMap()}");
     Provider.of<PinPointsService>(context, listen: false).add(pinPoint, marker);
   }
 
@@ -90,11 +88,7 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     if (this.title != null) {
       _add(
           context,
-          PinPoint(
-              title: this.title,
-              notes: "",
-              imgUrl: "https://medioteket.gavle.se/assets/img/error/img.png",
-              location: _address),
+          PinPoint(title: this.title, notes: "", img: "", location: _address),
           InternalMarker(
             latitude: point.latitude,
             longitude: point.longitude,

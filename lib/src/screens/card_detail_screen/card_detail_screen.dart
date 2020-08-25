@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pinpoint/src/models/pin_point_model.dart';
+import 'package:pinpoint/src/services/pinpoints_list_service.dart';
+import 'package:provider/provider.dart';
 
 class CardDetailScreen extends StatelessWidget {
   final PinPoint pinPoint;
@@ -20,17 +22,9 @@ class CardDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Hero(
-                tag: pinPoint.imgUrl +
-                    pinPoint.title +
-                    pinPoint.location, //FIXME: Shit tag?
+                tag: pinPoint.title + pinPoint.location, //FIXME: Shit tag?
                 child: Center(
-                  child: ClipRRect(
-                    child: Image.network(
-                      pinPoint.imgUrl,
-                      fit: BoxFit.contain,
-                      height: 250,
-                    ),
-                  ),
+                  child: _getImage(context, pinPoint.id),
                 ),
               ),
               Padding(
@@ -60,6 +54,23 @@ class CardDetailScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _getImage(BuildContext ctx, int id) {
+    Image img = Provider.of<PinPointsService>(ctx).getImage(id);
+    return ClipRect(
+      child: img != null
+          ? Image(
+              image: img.image,
+              //fit: BoxFit.contain,
+              height: 250,
+            )
+          : Image.network(
+              "https://medioteket.gavle.se/assets/img/error/img.png", //FIXME: use img from assets folder
+              fit: BoxFit.contain,
+              height: 250,
+            ),
     );
   }
 }
