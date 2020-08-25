@@ -1,19 +1,18 @@
-import 'package:meta/meta.dart';
 import '../db/database_helper.dart';
 
 class PinPoint {
-  String title, notes, imgUrl, location, id;
+  int id;
+  String title, notes, imgUrl, location;
 
   PinPoint({
     this.title,
-    this.id,
     this.notes,
     this.imgUrl,
     this.location,
   });
 
   Map<String, dynamic> toMap() {
-    var map = {
+    var map = <String, dynamic>{
       DatabaseHelper.COLUMN_ID: this.id,
       DatabaseHelper.COLUMN_IMG: this.imgUrl,
       DatabaseHelper.COLUMN_LOCATION: this.location,
