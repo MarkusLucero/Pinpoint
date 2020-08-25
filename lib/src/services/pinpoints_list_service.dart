@@ -90,7 +90,7 @@ class PinPointsService extends ChangeNotifier {
     if (title != "") {
       PinPoint pinPoint = _sharedData.pinPoints[index];
       pinPoint.title = title;
-      InternalMarker marker = _getMarkerOf(pinPoint.id);
+      InternalMarker marker = _getMarkerOfItsPinPointId(pinPoint.id);
       marker.title = title;
       DatabaseHelper databaseHelper = DatabaseHelper.db;
       await databaseHelper.update(pinPoint, marker, true);
@@ -100,12 +100,20 @@ class PinPointsService extends ChangeNotifier {
     }
   }
 
+  InternalMarker _getMarkerOfItsPinPointId(int id) {
+    InternalMarker found;
+    _sharedData.markers.forEach((marker) {
+      if (marker.pinPointId == id) {
+        found = marker;
+      }
+    });
+    return found;
+  }
+
   InternalMarker _getMarkerOf(int id) {
     InternalMarker found;
     _sharedData.markers.forEach((marker) {
-      print("${marker.pinPointId}");
-      print("$id");
-      if (marker.pinPointId == id) {
+      if (marker.id == id) {
         found = marker;
       }
     });
@@ -120,6 +128,18 @@ class PinPointsService extends ChangeNotifier {
       }
     });
     return found;
+  }
+
+  InternalMarker fetchMarkerOfItsPinPointId(int id) {
+    return _getMarkerOfItsPinPointId(id);
+  }
+
+  InternalMarker fetchMarker(int id) {
+    return _getMarkerOf(id);
+  }
+
+  PinPoint fetchPinPoint(int id) {
+    return _getPinPointOf(id);
   }
 
   void editNotes(int index, String notes) async {
