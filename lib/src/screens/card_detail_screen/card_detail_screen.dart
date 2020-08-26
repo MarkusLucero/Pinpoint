@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pinpoint/src/models/pin_point_model.dart';
-import 'package:pinpoint/src/services/pinpoints_list_service.dart';
-import 'package:provider/provider.dart';
 
 class CardDetailScreen extends StatelessWidget {
   final PinPoint pinPoint;
@@ -68,23 +66,6 @@ class CardDetailScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _getImage(BuildContext ctx, int id) {
-    Image img = Provider.of<PinPointsService>(ctx).getImage(id);
-    return ClipRect(
-      child: img != null
-          ? Image(
-              image: img.image,
-              //fit: BoxFit.contain,
-              height: 250,
-            )
-          : Image(
-              image: AssetImage("assets/images/picNotFound.png"),
-              fit: BoxFit.contain,
-              height: 250,
-            ),
     );
   }
 }

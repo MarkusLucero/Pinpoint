@@ -74,11 +74,17 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
       context,
       listen: false,
     ).fetchPinPoint(id);
-
+    Image img = Provider.of<PinPointsService>(
+      context,
+      listen: false,
+    ).getImage(id);
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CardDetailScreen(pinPoint: pinPoint),
+        builder: (context) => CardDetailScreen(
+          pinPoint: pinPoint,
+          img: img,
+        ),
       ),
     );
   }
