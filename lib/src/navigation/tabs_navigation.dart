@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pinpoint/src/navigation/custom_tab_app_bar.dart';
 import '../screens/pinpoint_map_screen/pinpoint_map.dart';
 import '../screens/pinpoint_cards_screen/pinpoint_cards_screen.dart';
 
@@ -8,18 +9,9 @@ class TabBarNav extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("PinPoint"),
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                icon: Icon(Icons.pin_drop),
-              ),
-              Tab(
-                icon: Icon(Icons.map),
-              ),
-            ],
-          ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: CustomTabAppBar(),
         ),
         body: TabBarView(physics: NeverScrollableScrollPhysics(), children: [
           PinPointCardsScreen(),

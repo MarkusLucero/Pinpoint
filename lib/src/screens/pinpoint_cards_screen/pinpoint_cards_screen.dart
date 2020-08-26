@@ -30,22 +30,24 @@ class PinPointCardsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     //Get pinpoints from shared data service
     List<PinPoint> pinPoints = Provider.of<PinPointsService>(context).pinPoints;
-    return ListView.builder(
-      itemCount: pinPoints.length,
-      itemBuilder: (context, index) {
-        Image img = _getImage(context, pinPoints[index].id);
-        return InkWell(
-          onTap: () =>
-              _goFromCardsScreenToDetailed(pinPoints[index], context, img),
-          onLongPress: () => cardsScreenModalBottomSheet(
-              pinPoints[index], index, context, img),
-          child: Card(
-            key: Key(pinPoints[index].id.toString()),
-            child: cardListTileWidget(
-                img, pinPoints[index].title, pinPoints[index].location),
-          ),
-        );
-      },
+    return SafeArea(
+      child: ListView.builder(
+        itemCount: pinPoints.length,
+        itemBuilder: (context, index) {
+          Image img = _getImage(context, pinPoints[index].id);
+          return InkWell(
+            onTap: () =>
+                _goFromCardsScreenToDetailed(pinPoints[index], context, img),
+            onLongPress: () => cardsScreenModalBottomSheet(
+                pinPoints[index], index, context, img),
+            child: Card(
+              key: Key(pinPoints[index].id.toString()),
+              child: cardListTileWidget(
+                  img, pinPoints[index].title, pinPoints[index].location),
+            ),
+          );
+        },
+      ),
     );
   }
 
