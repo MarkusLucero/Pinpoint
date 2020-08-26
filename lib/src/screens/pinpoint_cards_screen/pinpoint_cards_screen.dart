@@ -16,11 +16,12 @@ class PinPointCardsScreen extends StatelessWidget {
     This function is used to navigate to the detailed screen of a pinPoint after tapping
     on a card
   */
-  void _goFromCardsScreenToDetailed(PinPoint pinPoint, BuildContext context) {
+  void _goFromCardsScreenToDetailed(
+      PinPoint pinPoint, BuildContext context, Image img) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CardDetailScreen(pinPoint: pinPoint),
+        builder: (context) => CardDetailScreen(pinPoint: pinPoint, img: img),
       ),
     );
   }
@@ -32,14 +33,16 @@ class PinPointCardsScreen extends StatelessWidget {
     return ListView.builder(
       itemCount: pinPoints.length,
       itemBuilder: (context, index) {
+        Image img = _getImage(context, pinPoints[index].id);
         return InkWell(
-          onTap: () => _goFromCardsScreenToDetailed(pinPoints[index], context),
-          onLongPress: () =>
-              cardsScreenModalBottomSheet(pinPoints[index], index, context),
+          onTap: () =>
+              _goFromCardsScreenToDetailed(pinPoints[index], context, img),
+          onLongPress: () => cardsScreenModalBottomSheet(
+              pinPoints[index], index, context, img),
           child: Card(
             key: Key(pinPoints[index].id.toString()),
-            child: cardListTileWidget(_getImage(context, pinPoints[index].id),
-                pinPoints[index].title, pinPoints[index].location),
+            child: cardListTileWidget(
+                img, pinPoints[index].title, pinPoints[index].location),
           ),
         );
       },

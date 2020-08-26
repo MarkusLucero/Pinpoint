@@ -8,9 +8,7 @@ Widget cardListTileWidget(Image img, String title, String location) {
         backgroundColor: Colors.amber[100],
         backgroundImage: img != null
             ? img.image
-            : NetworkImage(
-                "https://medioteket.gavle.se/assets/img/error/img.png", //FIXME: use img from assets folder
-              ),
+            : AssetImage("assets/images/picNotFound.png"),
       ),
     ),
     title: Text(

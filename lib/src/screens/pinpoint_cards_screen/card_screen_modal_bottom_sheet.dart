@@ -13,11 +13,14 @@ import '../../services/pinpoints_list_service.dart';
     "open" in the bottomSheet modal in CardsScreen
   */
 void _goFromModalToCardDetailScreen(
-    PinPoint pinPoint, BuildContext context) async {
+    PinPoint pinPoint, BuildContext context, Image img) async {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => CardDetailScreen(pinPoint: pinPoint),
+      builder: (context) => CardDetailScreen(
+        pinPoint: pinPoint,
+        img: img,
+      ),
     ),
   ).then((value) => Navigator.pop(context));
 }
@@ -34,7 +37,7 @@ void _removePinPointFromList(int index, BuildContext context) {
     This function build the bottomSheet modal that shows up when long pressing a card
    */
 void cardsScreenModalBottomSheet(
-    PinPoint pinPoint, int index, BuildContext context) {
+    PinPoint pinPoint, int index, BuildContext context, Image img) {
   showModalBottomSheet(
     context: context,
     shape: getBottomSheetShape(),
@@ -43,7 +46,7 @@ void cardsScreenModalBottomSheet(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            onTap: () => _goFromModalToCardDetailScreen(pinPoint, context),
+            onTap: () => _goFromModalToCardDetailScreen(pinPoint, context, img),
             leading: Icon(Icons.launch),
             title: Text("Open"),
           ),
