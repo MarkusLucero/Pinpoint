@@ -13,11 +13,21 @@ Widget cardListTileWidget(Image img, String title, String location) {
     ),
     title: Text(
       title,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
       style: TextStyle(
-        fontWeight: FontWeight.bold,
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
       ),
     ),
-    subtitle: Text(location.toUpperCase()),
-    dense: true,
+    subtitle: Text(
+      location.toUpperCase(),
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w300,
+      ),
+    ),
+    //dense: true, //TODO: should we?
   );
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pinpoint/src/screens/pinpoint_cards_screen/alert_removal_dialog.dart';
 import '../../models/pin_point_model.dart';
 import '../../shapes/bottom_sheet_border_shape.dart';
 import '../card_detail_screen/card_detail_screen.dart';
@@ -25,12 +26,9 @@ void _goFromModalToCardDetailScreen(
   ).then((value) => Navigator.pop(context));
 }
 
-/* 
-    Will remove the pinPoint from list after pressing the delete button on the bottomSheet modal of said pinPoint card
-   */
-void _removePinPointFromList(int index, BuildContext context) {
-  Provider.of<PinPointsService>(context, listen: false).remove(index);
-  Navigator.pop(context); //hide modal after removing pinpoint
+void _removePinPoint(BuildContext ctx, int indexOfPintPoint) {
+  Provider.of<PinPointsService>(ctx, listen: false).remove(indexOfPintPoint);
+  Navigator.pop(ctx);
 }
 
 /* 
@@ -66,8 +64,17 @@ void cardsScreenModalBottomSheet(
             title: Text("Edit notes"),
           ),
           ListTile(
-            onTap: () => _removePinPointFromList(index, context),
-            leading: Icon(Icons.delete),
+            onTap: () async {
+              bool result = await showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    return CustomAlertRemovalDialog();
+                  });
+              if (result) {
+                _removePinPoint(context, index);
+              }
+            },
+            leading: Icon(Icons.delete_forever),
             title: Text("Delete"),
           )
         ],
