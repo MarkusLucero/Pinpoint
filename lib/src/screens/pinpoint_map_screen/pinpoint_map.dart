@@ -32,7 +32,8 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
   }
 
   PinPoint _getPinPoint(BuildContext context, int id) {
-    Provider.of<PinPointsService>(context, listen: false).getPinPointOf(id);
+    return Provider.of<PinPointsService>(context, listen: false)
+        .getPinPointOf(id);
   }
 
   //Updates current title to not be null allowing marker placement
@@ -47,6 +48,7 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     currentZoom = position.zoom;
   }
 
+  //Creates a set needed by Google Maps widget in order to render markers
   Set<Marker> _convertInternalMarkersToMarkers(BuildContext context) {
     int index = 0;
     List<InternalMarker> internalMarkers =
@@ -83,7 +85,7 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     );
   }
 
-  //moves camera to where you click on map. Factors in current zoom.
+  //moves camera to where you click on map. Factors in current zoom levels.
   Future<void> moveCamera(LatLng coords) async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(
