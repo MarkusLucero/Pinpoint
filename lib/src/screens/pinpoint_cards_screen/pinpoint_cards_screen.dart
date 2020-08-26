@@ -44,7 +44,8 @@ class PinPointCardsScreen extends StatelessWidget {
             key: Key(pinPoints[index].id.toString()),
             direction: DismissDirection.endToStart,
             onDismissed: (dir) {
-              Provider.of<PinPointsService>(context).remove(index);
+              Provider.of<PinPointsService>(context, listen: false)
+                  .remove(index);
             },
             confirmDismiss: (dir) {
               return showDialog(
