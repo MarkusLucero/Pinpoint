@@ -102,7 +102,7 @@ class PinPointsService extends ChangeNotifier {
     return found;
   }
 
-  PinPoint getPinPointOf(int pinPointId) {
+  PinPoint _getPinPointOf(int pinPointId) {
     PinPoint found;
     _sharedData.pinPoints.forEach((pinPoint) {
       if (pinPoint.id == pinPointId) {
@@ -124,7 +124,7 @@ class PinPointsService extends ChangeNotifier {
 
 /* Fetch pinPoint of corresponding pinPoint id */
   PinPoint fetchPinPoint(int pinPointId) {
-    return getPinPointOf(pinPointId);
+    return _getPinPointOf(pinPointId);
   }
 
   void editNotes(int index, String notes) async {
@@ -138,7 +138,7 @@ class PinPointsService extends ChangeNotifier {
   void editImage(int pinPointId, File imgFile) async {
     Uint8List imgBytes = imgFile.readAsBytesSync();
     String base64Image = base64String(imgBytes);
-    PinPoint pinPoint = getPinPointOf(pinPointId);
+    PinPoint pinPoint = _getPinPointOf(pinPointId);
     pinPoint.img = base64Image;
     DatabaseHelper databaseHelper = DatabaseHelper.db;
     await databaseHelper.update(pinPoint, null, false);
@@ -146,7 +146,7 @@ class PinPointsService extends ChangeNotifier {
   }
 
   Image getImage(int pinPointId) {
-    PinPoint pinPoint = getPinPointOf(pinPointId);
+    PinPoint pinPoint = _getPinPointOf(pinPointId);
     if (pinPoint.img == "") return null;
     Uint8List dataBytes = dataFromBase64String(pinPoint.img);
     Image img = Image.memory(dataBytes);

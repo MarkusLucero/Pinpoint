@@ -31,11 +31,6 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     Provider.of<PinPointsService>(context, listen: false).add(pinPoint, marker);
   }
 
-  PinPoint _getPinPoint(BuildContext context, int id) {
-    return Provider.of<PinPointsService>(context, listen: false)
-        .getPinPointOf(id);
-  }
-
   //Updates current title to not be null allowing marker placement
   void updateTitle(String newTitle) {
     print(newTitle);
@@ -50,12 +45,11 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
 
   //Creates a set needed by Google Maps widget in order to render markers
   Set<Marker> _convertInternalMarkersToMarkers(BuildContext context) {
-    int index = 0;
     List<InternalMarker> internalMarkers =
         Provider.of<PinPointsService>(context).markers;
     Set<Marker> markers = Set<Marker>();
     internalMarkers.forEach((mark) {
-      PinPoint current = _getPinPoint(context, index);
+      int idToPinPoint = mark.pinPointId;
       markers.add(
         Marker(
           markerId: MarkerId(mark.id.toString()),
@@ -68,15 +62,19 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
             snippet: "Test",
           ),
           icon: BitmapDescriptor.defaultMarker,
-          onTap: () => (_goFromMarkerToDetailed(current, context)),
+          onTap: () => (_goFromMarkerToDetailed(context, idToPinPoint)),
         ),
       );
-      index++;
     });
     return markers;
   }
 
-  void _goFromMarkerToDetailed(PinPoint pinPoint, context) {
+  void _goFromMarkerToDetailed(BuildContext context, int id) {
+    PinPoint pinPoint = Provider.of<PinPointsService>(
+      context,
+      listen: false,
+    ).fetchPinPoint(id);
+
     Navigator.push(
       context,
       MaterialPageRoute(
