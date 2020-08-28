@@ -38,7 +38,6 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     print(this.title);
   }
 
-  // helper function to get current zoom of the camera
   void _getCurrentZoom(CameraPosition position) async {
     currentZoom = position.zoom;
   }
