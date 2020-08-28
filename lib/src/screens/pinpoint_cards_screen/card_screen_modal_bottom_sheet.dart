@@ -71,6 +71,7 @@ void cardsScreenModalBottomSheet(
                     return CustomAlertRemovalDialog();
                   });
               if (result) {
+                print(index);
                 _removePinPoint(context, index);
               }
             },

@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:pinpoint/src/models/internal_marker_model.dart';
-import 'package:pinpoint/src/screens/pinpoint_cards_screen/pinpoint_cards_screen.dart';
 import 'package:pinpoint/src/shapes/bottom_sheet_border_shape.dart';
-import 'added_marker_modal.dart';
-import '../../services/pinpoints_list_service.dart';
 import 'package:provider/provider.dart';
+import 'added_marker_modal.dart';
+import '../../screens/pinpoint_cards_screen/alert_removal_dialog.dart';
+import '../../services/pinpoints_list_service.dart';
 import '../../models/pin_point_model.dart';
 import '../card_detail_screen/card_detail_screen.dart';
+import '../pinpoint_cards_screen/map_screen_modal_bottom_sheet.dart';
 
 class PinPointMapScreen extends StatefulWidget {
   @override
@@ -42,6 +43,44 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     currentZoom = position.zoom;
   }
 
+  void _mapScreenModalBottomSheet(int pinPointId, BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        shape: getBottomSheetShape(),
+        builder: (context) => SafeArea(
+              child: Column(
+                children: [
+                  ListTile(
+                    onTap: () => (_goFromMarkerToDetailed(context, pinPointId)),
+                    leading: Icon(Icons.image),
+                    title: Text("View"),
+                  ),
+                  ListTile(
+                      onTap: () => null,
+                      leading: Icon(Icons.zoom_out_map),
+                      title: Text("Move")),
+                  ListTile(
+                    onTap: () async {
+                      bool result = await showDialog<bool>(
+                          context: context,
+                          builder: (context) {
+                            return CustomAlertRemovalDialog();
+                          });
+                      if (result) {
+                        print(pinPointId);
+                        Provider.of<PinPointsService>(context, listen: false)
+                            .remove(pinPointId - 1);
+                        Navigator.pop(context);
+                      }
+                    },
+                    leading: Icon(Icons.delete_forever),
+                    title: Text("Delete"),
+                  ),
+                ],
+              ),
+            ));
+  }
+
   //Creates a set needed by Google Maps widget in order to render markers
   Set<Marker> _convertInternalMarkersToMarkers(BuildContext context) {
     List<InternalMarker> internalMarkers =
@@ -61,7 +100,7 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
             snippet: "Test",
           ),
           icon: BitmapDescriptor.defaultMarker,
-          onTap: () => (_goFromMarkerToDetailed(context, idToPinPoint)),
+          onTap: () => (_mapScreenModalBottomSheet(idToPinPoint, context)),
         ),
       );
     });
