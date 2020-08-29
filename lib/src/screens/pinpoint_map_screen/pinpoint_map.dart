@@ -10,6 +10,7 @@ import '../../screens/pinpoint_cards_screen/alert_removal_dialog.dart';
 import '../../services/pinpoints_list_service.dart';
 import '../../models/pin_point_model.dart';
 import '../card_detail_screen/card_detail_screen.dart';
+import './map_modal_switchlist.dart';
 import '../pinpoint_cards_screen/map_screen_modal_bottom_sheet.dart';
 
 class PinPointMapScreen extends StatefulWidget {
@@ -55,10 +56,9 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
                     leading: Icon(Icons.image),
                     title: Text("View"),
                   ),
-                  ListTile(
-                      onTap: () => null,
-                      leading: Icon(Icons.zoom_out_map),
-                      title: Text("Move")),
+                  MapModalSwitchList(
+                    markerId: pinPointId,
+                  ),
                   ListTile(
                     onTap: () async {
                       bool result = await showDialog<bool>(
