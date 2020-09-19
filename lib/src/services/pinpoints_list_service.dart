@@ -145,6 +145,11 @@ class PinPointsService extends ChangeNotifier {
     _refreshPinPoints();
   }
 
+  void moveMarker(int pinPointId) {
+    PinPoint pinPoint = _getPinPointOf(pinPointId);
+    DatabaseHelper databaseHelper = DatabaseHelper.db;
+  }
+
   Image getImage(int pinPointId) {
     PinPoint pinPoint = _getPinPointOf(pinPointId);
     if (pinPoint.img == "") return null;

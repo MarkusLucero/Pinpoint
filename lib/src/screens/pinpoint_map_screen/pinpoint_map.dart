@@ -45,7 +45,8 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
     currentZoom = position.zoom;
   }
 
-  void _mapScreenModalBottomSheet(int pinPointId, BuildContext context) {
+  void _mapScreenModalBottomSheet(
+      int pinPointId, MarkerId markerId, BuildContext context) {
     showModalBottomSheet(
         context: context,
         shape: getBottomSheetShape(),
@@ -58,7 +59,8 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
                     title: Text("View"),
                   ),
                   MapModalSwitchList(
-                    markerId: pinPointId,
+                    pinPointId: pinPointId,
+                    markerId: markerId,
                   ),
                   ListTile(
                     onTap: () async {
@@ -96,12 +98,14 @@ class _PinPointMapScreenState extends State<PinPointMapScreen> {
             mark.latitude,
             mark.longitude,
           ),
+          draggable: false,
           infoWindow: InfoWindow(
             title: mark.title,
             snippet: "Test",
           ),
           icon: BitmapDescriptor.defaultMarker,
-          onTap: () => (_mapScreenModalBottomSheet(idToPinPoint, context)),
+          onTap: () => (_mapScreenModalBottomSheet(
+              idToPinPoint, MarkerId(mark.id.toString()), context)),
         ),
       );
     });
