@@ -7,7 +7,7 @@ import '../models/pin_point_model.dart';
 class DatabaseHelper {
   /* NAME CONSTANTS */
   // change the name of DATABASE to get fresh db to work with in sim,
-  // or turn of and on the sim again
+  // or reset data on simulator
   static const String DATABASE = "pinPointDB.db";
   static const int DATABASE_VERSION = 1;
   static const String TABLE_PINPOINT = 'pinPoint';
@@ -100,7 +100,6 @@ class DatabaseHelper {
 
     List<PinPoint> listOfPinPoints = List<PinPoint>();
     pinPoints.forEach((currentPinPoint) {
-      print("in db get : $currentPinPoint");
       PinPoint pinPoint = PinPoint.fromMap(currentPinPoint);
       listOfPinPoints.add(pinPoint);
     });
@@ -112,7 +111,7 @@ class DatabaseHelper {
     extract markers from db
    */
   Future<List<InternalMarker>> getMarkers() async {
-    print("getting list of pinPoints from db");
+    print("getting list of markers from db");
     final Database db = await database;
     var markers = await db.query(
       TABLE_MARKER,

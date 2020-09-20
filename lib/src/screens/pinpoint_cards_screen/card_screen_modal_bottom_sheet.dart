@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pinpoint/src/screens/pinpoint_cards_screen/add_img_dialog.dart';
 import 'package:pinpoint/src/screens/pinpoint_cards_screen/alert_removal_dialog.dart';
 import '../../models/pin_point_model.dart';
 import '../../shapes/bottom_sheet_border_shape.dart';
@@ -49,7 +50,16 @@ void cardsScreenModalBottomSheet(
             title: Text("Open"),
           ),
           ListTile(
-            onTap: () => _getImage(pinPoint, context),
+            onTap: () async {
+              bool result = await showDialog<bool>(
+                  context: context,
+                  builder: (context) {
+                    return CustomAddImageDialog();
+                  });
+              if (result != null) {
+                _getImage(pinPoint.id, context, result);
+              }
+            },
             leading: Icon(Icons.image),
             title: Text("Add Image"),
           ),
@@ -83,12 +93,16 @@ void cardsScreenModalBottomSheet(
   );
 }
 
-void _getImage(PinPoint pinPoint, BuildContext context) async {
+void _getImage(int pinPointId, BuildContext context, bool gallery) async {
   final picker = ImagePicker();
-  final PickedFile pickedFile =
-      await picker.getImage(source: ImageSource.gallery);
+  PickedFile pickedFile;
+  if (gallery) {
+    pickedFile = await picker.getImage(source: ImageSource.gallery);
+  } else {
+    pickedFile = await picker.getImage(source: ImageSource.camera);
+  }
   final _image = File(pickedFile.path);
 
   Provider.of<PinPointsService>(context, listen: false)
-      .editImage(pinPoint.id, _image);
+      .editImage(pinPointId, _image);
 }

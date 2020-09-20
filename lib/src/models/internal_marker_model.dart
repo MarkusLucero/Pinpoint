@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 import '../db/database_helper.dart';
 
 class InternalMarker {
