@@ -6,7 +6,6 @@ class CardDetailScreen extends StatelessWidget {
   final PinPoint pinPoint;
   final Image img;
 
-  //kolla upp detta med nycklar
   CardDetailScreen({Key key, @required this.pinPoint, this.img})
       : super(key: key);
 

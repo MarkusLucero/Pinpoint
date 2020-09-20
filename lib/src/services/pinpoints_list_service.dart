@@ -1,15 +1,12 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:pinpoint/src/db/database_helper.dart';
 import 'package:pinpoint/src/functions/base64.dart';
 import 'package:pinpoint/src/models/shared_data_tuple_model.dart';
 import 'package:pinpoint/src/models/internal_marker_model.dart';
-import 'package:pinpoint/src/screens/card_detail_screen/card_detail_screen.dart';
 import '../models/pin_point_model.dart';
 import 'dart:collection';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SharedData {
   List<PinPoint> pinPoints;
@@ -45,9 +42,6 @@ class PinPointsService extends ChangeNotifier {
   Future _refreshPinPoints() async {
     DatabaseHelper databaseHelper = DatabaseHelper.db;
     _sharedData.pinPoints = await databaseHelper.getPinPoints();
-/*     _sharedData.pinPoints.forEach((element) {
-      print("in shared data pinPoint: ${element.toMap()}");
-    }); */
     _sharedData.markers = await databaseHelper.getMarkers();
 
     // This call tells the widgets that are listening to this model to rebuild.
