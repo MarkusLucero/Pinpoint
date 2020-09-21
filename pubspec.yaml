@@ -25,6 +25,7 @@ dependencies:
   provider: ^4.3.2+1
   image_picker: ^0.6.7+6
   sqflite:
+  flutter_icons: ^1.1.0
   path:
   flutter:
     sdk: flutter
